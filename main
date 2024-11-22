@@ -1,0 +1,156 @@
+from memo_card import (
+    app, layout_card,
+    lb_Question, lb_Correct, lb_Result,
+    rbtn_1, rbtn_2, rbtn_3, rbtn_4,
+    btn_OK, show_question, show_result, btn_Menu
+)
+from PyQt5.QtWidgets import QWidget
+from random import shuffle
+
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QPushButton
+from PyQt5.QtCore import Qt
+class AddQuestionForm(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Додати нове питання")
+        self.setGeometry(100, 100, 400, 300)
+        self.layout = QVBoxLayout()
+
+        self.layout.setAlignment(Qt.AlignCenter)
+
+        self.question_input = QLineEdit(self)
+        self.question_input.setPlaceholderText("Введіть питання")
+        self.layout.addWidget(self.question_input)
+
+        self.correct_input = QLineEdit(self)
+        self.correct_input.setPlaceholderText("Введіть правильну відповідь")
+        self.layout.addWidget(self.correct_input)
+
+        self.wrong1_input = QLineEdit(self)
+        self.wrong1_input.setPlaceholderText("Введіть невірну відповідь 1")
+        self.layout.addWidget(self.wrong1_input)
+
+        self.wrong2_input = QLineEdit(self)
+        self.wrong2_input.setPlaceholderText("Введіть невірну відповідь 2")
+        self.layout.addWidget(self.wrong2_input)
+
+        self.wrong3_input = QLineEdit(self)
+        self.wrong3_input.setPlaceholderText("Введіть невірну відповідь 3")
+        self.layout.addWidget(self.wrong3_input)
+
+        self.add_btn = QPushButton("Додати питання")
+        self.layout.addWidget(self.add_btn)
+
+        self.setLayout(self.layout)
+
+from memo_card_menu import AddQuestionForm
+from question import *
+
+card_width, card_height = 600, 500  # початкові розміри вікна "картка"
+text_wrong = 'Неправильно'
+text_correct = 'Правильно'
+
+frm_question = 'Яблуко'
+frm_right = 'apple'
+frm_wrong1 = 'application'
+frm_wrong2 = 'building'
+frm_wrong3 = 'caterpillar'
+
+# Тепер нам потрібно показати ці дані,
+# причому відповіді розподілити випадково між радіокнопками, і пам'ятати кнопку з правильною відповіддю.
+# Для цього створимо набір посилань на радіокнопки та перемішаємо його
+radio_list = [rbtn_1, rbtn_2, rbtn_3, rbtn_4]
+shuffle(radio_list)
+answer = radio_list[
+    0]  # ми не знаємо, який це з радіобаттонів, але можемо покласти сюди правильну відповідь і запам'ятати це
+wrong_answer1, wrong_answer2, wrong_answer3 = radio_list[1], radio_list[2], radio_list[3]
+
+
+def show_data():
+    global question_number
+    frm_question = questions[question_number]['question']
+    frm_right = questions[question_number]['right']
+    frm_wrong1, frm_wrong2, frm_wrong3 = questions[question_number]['wrongs']
+    lb_Question.setText(frm_question)
+    lb_Correct.setText(frm_right)
+    answer.setText(frm_right)
+    wrong_answer1.setText(frm_wrong1)
+    wrong_answer2.setText(frm_wrong2)
+    wrong_answer3.setText(frm_wrong3)
+
+
+def check_result():
+    correct = answer.isChecked()
+    if correct:
+        lb_Result.setText(text_correct)
+        show_result()
+    else:
+        incorrect = wrong_answer1.isChecked() or wrong_answer2.isChecked() or wrong_answer3.isChecked()
+        if incorrect:
+            lb_Result.setText(text_wrong)
+            show_result()
+
+
+question_number = 0
+
+
+def click_OK():
+    global question_number
+    if btn_OK.text() != 'Наступне питання':
+        check_result()
+    else:
+        try:
+            question_number += 1
+            if question_number >= len(questions):  # Перевірка на кінець питань
+                question_number = 0  # Повернення до початку запитань
+                print('Питання закінчилися, додай ще!')
+                open_add_question_form()  # Відкриваємо форму для додавання нового питання
+            show_question()
+            show_data()
+        except Exception as e:
+            print("Помилка:", e)
+
+
+def open_add_question_form():
+    add_question_form = AddQuestionForm()
+
+    def handle_add_new_question():
+        add_new_question(add_question_form)
+
+    add_question_form.add_btn.clicked.connect(handle_add_new_question)
+    add_question_form.show()
+
+
+def add_new_question(form):
+    new_question = {
+        "question": form.question_input.text(),
+        "right": form.correct_input.text(),
+        "wrongs": [
+            form.wrong1_input.text(),
+            form.wrong2_input.text(),
+            form.wrong3_input.text()
+        ]
+    }
+    questions.append(new_question)
+    form.close()
+    print("Нове питання додано!")
+    question_number = 0  # Повертаємо номер питання до початку після додавання нового питання
+    show_question()
+    show_data()
+
+
+
+win_card = QWidget()
+win_card.resize(card_width, card_height)
+win_card.move(300, 300)
+win_card.setWindowTitle('Memory Card')
+
+win_card.setLayout(layout_card)
+show_data()
+show_question()
+btn_OK.clicked.connect(click_OK)
+
+btn_Menu.clicked.connect(open_add_question_form)
+
+win_card.show()
+app.exec_()
