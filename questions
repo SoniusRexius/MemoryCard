@@ -1,0 +1,53 @@
+questions = [
+    {
+        'question': 'Яблуко',
+        'right': 'apple',
+        'wrongs': ['application', 'building', 'caterpillar']
+    },
+    {
+        'question': 'Собака',
+        'right': 'dog',
+        'wrongs': ['cat', 'dig', 'wolf']
+    },
+    {
+        'question': 'Кіт',
+        'right': 'cat',
+        'wrongs': ['car', 'kitty', 'house']
+    },
+    {
+        'question': 'Прокляття',
+        'right': 'curse',
+        'wrongs': ['cure', 'cute', 'devil',]
+    },
+    {
+        'question': 'Гепард',
+        'right': 'cheetah',
+        'wrongs': ['cheese', 'speed', 'dry']
+    },
+    {
+        'question': 'Підкрадатися',
+        'right': 'sneak',
+        'wrongs': ['snake', 'slim', 'walk']
+    },
+    {
+        'question': 'Негідник',
+        'right': 'bad egg',
+        'wrongs': ['thief', 'bad guy', 'kidnapper']
+    },
+    {   'question': 'Луска',
+        'right': 'scale',
+        'wrongs': ['scare', 'skin', 'light']
+    },
+    {   'question': 'Звір',
+        'right': 'beast',
+        'wrongs': ['animal', 'monster', 'terror']
+
+    },
+    {
+        'question': 'Тиск',
+        'right': 'pressure',
+        'wrongs': ['press', 'lure', 'bait']
+
+    }
+
+]
